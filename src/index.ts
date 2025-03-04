@@ -419,7 +419,7 @@ class Degit extends EventEmitter {
 			code: 'SUCCESS',
 			message: `cloned ${bold(`${repo.user}/${repo.name}`)}#${bold(repo.ref)}${
 				dest !== '.' ? ` to ${dest}` : ''
-			}`,
+				}`,
 			repo,
 			dest
 		});
@@ -556,7 +556,11 @@ class Degit extends EventEmitter {
 				return refs?.find(ref => ref.type === 'HEAD')?.hash ?? '';
 			}
 
-			return this._selectRef(refs, repo.ref);
+			const selectedRef = this._selectRef(refs, repo.ref);
+			if (selectedRef) return selectedRef;
+
+			const isCommitHash = /^[0-9a-f]{40}$/.test(repo.ref);
+			return isCommitHash ? repo.ref : ''
 		} catch (err) {
 			if (err instanceof DegitError && 'code' in err && 'message' in err) {
 				this._warn(err);
@@ -704,7 +708,7 @@ class Degit extends EventEmitter {
 			code: 'EXTRACTING',
 			message: `extracting ${
 				subdir ? `${repo.subdir} from ` : ''
-			}${file} to ${dest}`
+				}${file} to ${dest}`
 		});
 
 		await fs.mkdir(dest, { recursive: true });
@@ -866,7 +870,7 @@ function parse(src: string): Repo {
 
 	const domain = `${siteName}${
 		tld || supported[siteName] || supported[site] || ''
-	}`;
+		}`;
 
 	const url = `https://${domain}/${user}/${name}`;
 	const ssh = `git@${domain}:${user}/${name}`;
