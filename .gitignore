@@ -8,7 +8,7 @@ node_modules/
 .tmp/
 temp/
 .temp/
-dist/
+#dist/
 build/
 lib/
 .vscode/
